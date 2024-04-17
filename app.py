@@ -19,6 +19,15 @@ pieces = [
      'white_rook']
 ]
 
+current_player = 'white'
+
+def switch_turn():
+    global current_player
+    if current_player == 'white':
+        current_player = 'black'
+    else:
+        current_player = 'white'
+
 def is_valid_move(from_row, from_col, to_row, to_col, color):
     if not (0 <= from_row < size and 0 <= from_col < size and 0 <= to_row < size and 0 <= to_col < size):
         return False
@@ -112,6 +121,8 @@ def chessboard():
 
 @app.route('/move_piece', methods=['POST'])
 def move_piece():
+    global current_player
+
     if request.method == 'POST':
         data = request.get_json()
         from_row = data['from_row']
@@ -126,6 +137,11 @@ def move_piece():
         color = piece.split('_')[0]
         piece_type = piece.split('_')[1]
 
+        # Check if it's the current player's turn
+        if color != current_player:
+            return jsonify({'error': 'It\'s not your turn!'})
+
+        valid_move = False
         if piece_type == 'knight':
             valid_move = move_piece_knight(from_row, from_col, to_row, to_col, color)
         elif piece_type == 'rook':
@@ -146,6 +162,8 @@ def move_piece():
             pieces[to_row][to_col] = piece
             pieces[from_row][from_col] = None
 
+            switch_turn()  # Switch turn after successful move
+
             # Print the pieces array after the move in a readable format
             print("Pieces after move:")
             for row in pieces:
@@ -154,6 +172,7 @@ def move_piece():
             return jsonify({'pieces': pieces})
         else:
             return jsonify({'error': 'Invalid move'})
+
 
 
 if __name__ == '__main__':
