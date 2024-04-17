@@ -93,19 +93,24 @@ def move_piece_king(from_row, from_col, to_row, to_col, color):
 def move_piece_pawn(from_row, from_col, to_row, to_col, color):
     if color == 'white':
         direction = 1
-        start_row = 1
+        start_row = 6
     else:
         direction = -1
-        start_row = 6
-
+        start_row = 1
+    print(from_row, from_col)
+    print(to_row, to_col)
     if from_col == to_col:
         if from_row - to_row == direction:
             # Moving forward by one square
             if pieces[to_row][to_col] is None:
                 return True
-        elif from_row - to_row == 2 * direction and from_row == start_row:
-            # Moving forward by two squares from starting position
-            if pieces[from_row + direction][from_col] is None and pieces[to_row][to_col] is None:
+        elif color == 'white' and abs(from_row - to_row) == 2 and from_row == start_row:
+            # White Moving forward by two squares from starting position
+            if pieces[to_row][to_col] is None:
+                return True
+        elif color == 'black' and abs(from_row - to_row) == 2 and from_row == start_row:
+            # Black Moving forward by two squares from starting position
+            if pieces[to_row][to_col] is None:
                 return True
     elif abs(from_col - to_col) == 1 and from_row - to_row == direction:
         # Capturing diagonally
@@ -113,6 +118,7 @@ def move_piece_pawn(from_row, from_col, to_row, to_col, color):
             return True
 
     return False
+
 
 @app.route('/')
 def chessboard():
@@ -141,7 +147,6 @@ def move_piece():
         if color != current_player:
             return jsonify({'error': 'It\'s not your turn!'})
 
-        valid_move = False
         if piece_type == 'knight':
             valid_move = move_piece_knight(from_row, from_col, to_row, to_col, color)
         elif piece_type == 'rook':
