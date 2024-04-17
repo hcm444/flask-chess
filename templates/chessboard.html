@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chessboard</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            border: 1px solid black;
+            padding: 0;
+            position: relative;
+        }
+
+        /* Define colors for light and dark squares */
+        .light {
+            background-color: #f0d9b5;
+        }
+
+        .dark {
+            background-color: #b58863;
+        }
+
+        /* Style for piece images */
+        .piece {
+    width: 80%; /* Adjust the size of the piece as needed */
+    height: 80%; /* Adjust the size of the piece as needed */
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+    </style>
+</head>
+<body>
+    <h1>Chessboard</h1>
+    <table id="chessboard">
+        {% for row in range(size) %}
+        <tr>
+            {% for col in range(size) %}
+            {% set is_dark = (row + col) % 2 == 1 %}
+            <td class="{% if is_dark %}dark{% else %}light{% endif %}" data-row="{{ row }}" data-col="{{ col }}"></td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chessboard = document.getElementById('chessboard');
+
+            // Define piece images
+            const pieceImages = {
+                'white_rook': '/static/images/white_rook.png',
+                'white_knight': '/static/images/white_knight.png',
+                'white_bishop': '/static/images/white_bishop.png',
+                'white_queen': '/static/images/white_queen.png',
+                'white_king': '/static/images/white_king.png',
+                'white_pawn': '/static/images/white_pawn.png',
+                'black_rook': '/static/images/black_rook.png',
+                'black_knight': '/static/images/black_knight.png',
+                'black_bishop': '/static/images/black_bishop.png',
+                'black_queen': '/static/images/black_queen.png',
+                'black_king': '/static/images/black_king.png',
+                'black_pawn': '/static/images/black_pawn.png'
+            };
+
+            // Initialize piece positions
+            let pieces = {{ pieces | tojson }};
+
+            // Add pieces to the board
+            for (let row = 0; row < pieces.length; row++) {
+                for (let col = 0; col < pieces[row].length; col++) {
+                    const piece = pieces[row][col];
+                    if (piece) {
+                        const img = document.createElement('img');
+                        img.src = pieceImages[piece];
+                        img.classList.add('piece');
+                        img.draggable = true;
+                        img.dataset.row = row;
+                        img.dataset.col = col;
+                        chessboard.rows[row].cells[col].appendChild(img);
+                    }
+                }
+            }
+
+            // Add drag-and-drop functionality
+            let draggedPiece = null;
+
+            document.addEventListener('dragstart', function(event) {
+                if (event.target.classList.contains('piece')) {
+                    draggedPiece = event.target;
+                }
+            });
+
+            chessboard.addEventListener('dragover', function(event) {
+                event.preventDefault();
+            });
+
+            chessboard.addEventListener('drop', function(event) {
+    event.preventDefault();
+    const target = event.target.closest('td');
+    if (target && draggedPiece) {
+        const fromRow = parseInt(draggedPiece.dataset.row);
+        const fromCol = parseInt(draggedPiece.dataset.col);
+        const toRow = parseInt(target.dataset.row);
+        const toCol = parseInt(target.dataset.col);
+        if (fromRow !== toRow || fromCol !== toCol) {
+            const data = {
+                from_row: fromRow,
+                from_col: fromCol,
+                to_row: toRow,
+                to_col: toCol
+            };
+            fetch('/move_piece', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.pieces) {
+                    // Update board with new piece positions
+                    updateBoard(data.pieces);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        draggedPiece = null;
+    }
+});
+
+
+            function updateBoard(newPieces) {
+                pieces = newPieces;
+                for (let row = 0; row < pieces.length; row++) {
+                    for (let col = 0; col < pieces[row].length; col++) {
+                        const cell = chessboard.rows[row].cells[col];
+                        while (cell.firstChild) {
+                            cell.removeChild(cell.lastChild);
+                        }
+                        const piece = pieces[row][col];
+                        if (piece) {
+                            const img = document.createElement('img');
+                            img.src = pieceImages[piece];
+                            img.classList.add('piece');
+                            img.draggable = true;
+                            img.dataset.row = row;
+                            img.dataset.col = col;
+                            cell.appendChild(img);
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
