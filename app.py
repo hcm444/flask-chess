@@ -109,6 +109,7 @@ def move_piece_pawn(from_row, from_col, to_row, to_col, color):
 def chessboard():
     return render_template('chessboard.html', size=size, pieces=pieces)
 
+
 @app.route('/move_piece', methods=['POST'])
 def move_piece():
     if request.method == 'POST':
@@ -144,9 +145,17 @@ def move_piece():
         if valid_move:
             pieces[to_row][to_col] = piece
             pieces[from_row][from_col] = None
+
+            # Print the pieces array after the move in a readable format
+            print("Pieces after move:")
+            for row in pieces:
+                print(row)
+
             return jsonify({'pieces': pieces})
         else:
             return jsonify({'error': 'Invalid move'})
 
+
 if __name__ == '__main__':
     app.run(debug=True)
+
