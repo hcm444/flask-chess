@@ -28,11 +28,16 @@ def is_valid_move(from_row, from_col, to_row, to_col, color):
 
     return True
 
+
 def move_piece_knight(from_row, from_col, to_row, to_col, color):
     row_diff = abs(to_row - from_row)
     col_diff = abs(to_col - from_col)
-    return (row_diff == 2 and col_diff == 1) or (row_diff == 1 and col_diff == 2) and \
-           is_valid_move(from_row, from_col, to_row, to_col, color)
+
+    if (row_diff == 2 and col_diff == 1) or (row_diff == 1 and col_diff == 2):
+        if pieces[to_row][to_col] is None or pieces[to_row][to_col].split('_')[0] != color:
+            return is_valid_move(from_row, from_col, to_row, to_col, color)
+    return False
+
 
 def move_piece_rook(from_row, from_col, to_row, to_col, color):
     if from_row == to_row:
