@@ -5,18 +5,18 @@ app = Flask(__name__)
 # Global variables to store board and piece positions
 size = 8
 pieces = [
-    ['white_rook', 'white_knight', 'white_bishop', 'white_queen', 'white_king', 'white_bishop', 'white_knight',
-     'white_rook'],
-    ['white_pawn', 'white_pawn', 'white_pawn', 'white_pawn', 'white_pawn', 'white_pawn', 'white_pawn',
-     'white_pawn'],
-    [None] * 8,
-    [None] * 8,
-    [None] * 8,
-    [None] * 8,
+    ['black_rook', 'black_knight', 'black_bishop', 'black_queen', 'black_king', 'black_bishop', 'black_knight',
+     'black_rook'],
     ['black_pawn', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn',
      'black_pawn'],
-    ['black_rook', 'black_knight', 'black_bishop', 'black_queen', 'black_king', 'black_bishop', 'black_knight',
-     'black_rook']
+    [None] * 8,
+    [None] * 8,
+    [None] * 8,
+    [None] * 8,
+    ['white_pawn', 'white_pawn', 'white_pawn', 'white_pawn', 'white_pawn', 'white_pawn', 'white_pawn',
+     'white_pawn'],
+    ['white_rook', 'white_knight', 'white_bishop', 'white_queen', 'white_king', 'white_bishop', 'white_knight',
+     'white_rook']
 ]
 
 def is_valid_move(from_row, from_col, to_row, to_col, color):
@@ -83,11 +83,11 @@ def move_piece_king(from_row, from_col, to_row, to_col, color):
 
 def move_piece_pawn(from_row, from_col, to_row, to_col, color):
     if color == 'white':
-        direction = -1
-        start_row = 6
-    else:
         direction = 1
         start_row = 1
+    else:
+        direction = -1
+        start_row = 6
 
     if from_col == to_col:
         if from_row - to_row == direction:
