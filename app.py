@@ -92,20 +92,18 @@ def move_piece_king(from_row, from_col, to_row, to_col, color):
 
 
 en_passant_target = None
-
 def move_piece_pawn(from_row, from_col, to_row, to_col, color):
     global en_passant_target
 
     if color == 'white':
         direction = 1
         start_row = 6
-        en_passant_row = 5
+        en_passant_row = start_row - 1
 
     else:
         direction = -1
         start_row = 1
-        en_passant_row = 2
-
+        en_passant_row = start_row + 1
 
     if from_col == to_col:
         if from_row - to_row == direction:
