@@ -123,7 +123,6 @@ def move_piece_pawn(from_row, from_col, to_row, to_col, color):
             pieces[from_row][from_col] = None
             switch_turn()  # Switch turn after pawn promotion
             return True
-
     if from_col == to_col:
         if from_row - to_row == direction:
             # Moving forward by one square
