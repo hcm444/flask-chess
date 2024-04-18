@@ -21,6 +21,40 @@ pieces = [
 
 current_player = 'white'
 
+def is_king_in_check(color):
+    # Find the position of the king of the given color
+    king_row, king_col = None, None
+    for row_idx, row in enumerate(pieces):
+        for col_idx, piece in enumerate(row):
+            if piece and piece == f'{color}_king':
+                king_row, king_col = row_idx, col_idx
+                break
+
+    # Check if the king is threatened by any opponent's piece
+    for row_idx, row in enumerate(pieces):
+        for col_idx, piece in enumerate(row):
+            if piece and piece.split('_')[0] != color:
+                if piece.split('_')[1] == 'knight':
+                    if move_piece_knight(row_idx, col_idx, king_row, king_col, piece.split('_')[0]):
+                        return True
+                elif piece.split('_')[1] == 'rook':
+                    if move_piece_rook(row_idx, col_idx, king_row, king_col, piece.split('_')[0]):
+                        return True
+                elif piece.split('_')[1] == 'bishop':
+                    if move_piece_bishop(row_idx, col_idx, king_row, king_col, piece.split('_')[0]):
+                        return True
+                elif piece.split('_')[1] == 'queen':
+                    if move_piece_queen(row_idx, col_idx, king_row, king_col, piece.split('_')[0]):
+                        return True
+                elif piece.split('_')[1] == 'king':
+                    if move_piece_king(row_idx, col_idx, king_row, king_col, piece.split('_')[0]):
+                        return True
+                elif piece.split('_')[1] == 'pawn':
+                    if move_piece_pawn(row_idx, col_idx, king_row, king_col, piece.split('_')[0]):
+                        return True
+    return False
+
+
 def promote_pawn(row, col, color):
     if color == 'white' and row == 0:
         return 'white_queen'
@@ -203,6 +237,15 @@ def move_piece():
             if promoted_piece:
                 pieces[to_row][to_col] = promoted_piece
 
+            # Check if either king is in check after the move
+            white_in_check = is_king_in_check('white')
+            black_in_check = is_king_in_check('black')
+
+            if white_in_check:
+                print("White king is in check!")
+            if black_in_check:
+                print("Black king is in check!")
+
             switch_turn()  # Switch turn after successful move
 
             # Print the pieces array after the move in a readable format
@@ -216,4 +259,6 @@ def move_piece():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
 
