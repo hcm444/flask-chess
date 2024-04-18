@@ -21,6 +21,15 @@ pieces = [
 
 current_player = 'white'
 
+def promote_pawn(row, col, color):
+    if color == 'white' and row == 0:
+        return 'white_queen'
+    elif color == 'black' and row == 7:
+        return 'black_queen'
+    else:
+        return None
+
+
 def switch_turn():
     global current_player
     if current_player == 'white':
@@ -92,18 +101,28 @@ def move_piece_king(from_row, from_col, to_row, to_col, color):
 
 
 en_passant_target = None
+
+
 def move_piece_pawn(from_row, from_col, to_row, to_col, color):
     global en_passant_target
 
     if color == 'white':
         direction = 1
         start_row = 6
+        end_row = 0
         en_passant_row = start_row - 1
 
     else:
         direction = -1
         start_row = 1
+        end_row = 7
         en_passant_row = start_row + 1
+
+    if to_row == end_row:
+        if pieces[to_row][to_col] is None:
+            pieces[from_row][from_col] = None
+            switch_turn()  # Switch turn after pawn promotion
+            return True
 
     if from_col == to_col:
         if from_row - to_row == direction:
@@ -116,6 +135,7 @@ def move_piece_pawn(from_row, from_col, to_row, to_col, color):
             if pieces[to_row][to_col] is None:
                 return True
     elif abs(from_col - to_col) == 1 and from_row - to_row == direction:
+
         # Capturing diagonally
         if (to_row, to_col) == en_passant_target:
             # Moving diagonally into the en passant target square
@@ -130,7 +150,6 @@ def move_piece_pawn(from_row, from_col, to_row, to_col, color):
             return True
 
     return False
-
 
 
 @app.route('/')
@@ -180,6 +199,11 @@ def move_piece():
             pieces[to_row][to_col] = piece
             pieces[from_row][from_col] = None
 
+            # Check for pawn promotion
+            promoted_piece = promote_pawn(to_row, to_col, color)
+            if promoted_piece:
+                pieces[to_row][to_col] = promoted_piece
+
             switch_turn()  # Switch turn after successful move
 
             # Print the pieces array after the move in a readable format
@@ -190,8 +214,6 @@ def move_piece():
             return jsonify({'pieces': pieces})
         else:
             return jsonify({'error': 'Invalid move'})
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
