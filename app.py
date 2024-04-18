@@ -90,34 +90,49 @@ def move_piece_king(from_row, from_col, to_row, to_col, color):
     return (abs(from_row - to_row) <= 1 and abs(from_col - to_col) <= 1) and \
            is_valid_move(from_row, from_col, to_row, to_col, color)
 
+
+en_passant_target = None
+
 def move_piece_pawn(from_row, from_col, to_row, to_col, color):
+    global en_passant_target
+
     if color == 'white':
         direction = 1
         start_row = 6
+        en_passant_row = 5
+
     else:
         direction = -1
         start_row = 1
-    print(from_row, from_col)
-    print(to_row, to_col)
+        en_passant_row = 2
+
+
     if from_col == to_col:
         if from_row - to_row == direction:
             # Moving forward by one square
             if pieces[to_row][to_col] is None:
                 return True
-        elif color == 'white' and abs(from_row - to_row) == 2 and from_row == start_row:
-            # White Moving forward by two squares from starting position
-            if pieces[to_row][to_col] is None:
-                return True
-        elif color == 'black' and abs(from_row - to_row) == 2 and from_row == start_row:
-            # Black Moving forward by two squares from starting position
+        elif abs(from_row - to_row) == 2 and from_row == start_row:
+            en_passant_target = (en_passant_row, from_col)
+            # Moving forward by two squares from starting position
             if pieces[to_row][to_col] is None:
                 return True
     elif abs(from_col - to_col) == 1 and from_row - to_row == direction:
         # Capturing diagonally
-        if pieces[to_row][to_col] and pieces[to_row][to_col].split('_')[0] != color:
+        if (to_row, to_col) == en_passant_target:
+            # Moving diagonally into the en passant target square
+            if color == "white":
+                pieces[to_row + 1][to_col] = None
+            if color == "black":
+                pieces[to_row - 1][to_col] = None
+            # Remove the enemy pawn from the correct column
+            en_passant_target = None
+            return True
+        elif pieces[to_row][to_col] and pieces[to_row][to_col].split('_')[0] != color:
             return True
 
     return False
+
 
 
 @app.route('/')
