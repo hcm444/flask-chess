@@ -19,8 +19,15 @@ pieces = [
      'white_rook']
 ]
 
-current_player = 'white'
 
+
+
+current_player = 'white'
+global wkc
+global wqc
+global bkc
+global bqc
+# Flags for kings' initial position
 
 def is_square_empty(row, col):
     return pieces[row][col] is None
@@ -237,9 +244,12 @@ def move_piece():
             # Handle other piece types
             valid_move = False
 
+
+
         if valid_move:
             pieces[to_row][to_col] = piece
             pieces[from_row][from_col] = None
+
 
             # Check for pawn promotion
             promoted_piece = promote_pawn(to_row, to_col, color)
@@ -258,25 +268,25 @@ def move_piece():
             switch_turn()  # Switch turn after successful move
 
             if is_square_empty(7, 5) and is_square_empty(7, 6):
-                print("White King Side Castling")
                 wkc = True
             else:
                 wkc = False
+            print("White King Side Castling: ", wkc)
             if is_square_empty(0, 1) and is_square_empty(0, 2) and is_square_empty(0, 3):
-                print("Black Queen Side Castling")
                 bqc = True
             else:
                 bqc = False
+            print("Black Queen Side Castling: ", bqc)
             if is_square_empty(7, 1) and is_square_empty(7, 2) and is_square_empty(7, 3):
-                print("White Queen Side Castling")
                 wqc = True
             else:
                 wqc = False
+            print("White Queen Side Castling: ", wqc)
             if is_square_empty(0, 5) and is_square_empty(0, 6):
-                print("Black King Side Castling")
                 bkc = True
             else:
-                wkc = False
+                bkc = False
+            print("Black King Side Castling: ", bkc)
             # Print the pieces array after the move in a readable format
             print("Pieces after move:")
             for row in pieces:
