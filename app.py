@@ -21,6 +21,7 @@ pieces = [
 
 current_player = 'white'
 
+
 def is_square_empty(row, col):
     return pieces[row][col] is None
 
@@ -75,6 +76,7 @@ def switch_turn():
     else:
         current_player = 'white'
 
+
 def is_valid_move(from_row, from_col, to_row, to_col, color):
     if not (0 <= from_row < size and 0 <= from_col < size and 0 <= to_row < size and 0 <= to_col < size):
         return False
@@ -113,6 +115,7 @@ def move_piece_rook(from_row, from_col, to_row, to_col, color):
 
     return is_valid_move(from_row, from_col, to_row, to_col, color)
 
+
 def move_piece_bishop(from_row, from_col, to_row, to_col, color):
     if abs(from_row - to_row) != abs(from_col - to_col):
         return False
@@ -129,13 +132,15 @@ def move_piece_bishop(from_row, from_col, to_row, to_col, color):
 
     return is_valid_move(from_row, from_col, to_row, to_col, color)
 
+
 def move_piece_queen(from_row, from_col, to_row, to_col, color):
     return move_piece_rook(from_row, from_col, to_row, to_col, color) or \
-           move_piece_bishop(from_row, from_col, to_row, to_col, color)
+        move_piece_bishop(from_row, from_col, to_row, to_col, color)
+
 
 def move_piece_king(from_row, from_col, to_row, to_col, color):
     return (abs(from_row - to_row) <= 1 and abs(from_col - to_col) <= 1) and \
-           is_valid_move(from_row, from_col, to_row, to_col, color)
+        is_valid_move(from_row, from_col, to_row, to_col, color)
 
 
 en_passant_target = None
@@ -252,22 +257,22 @@ def move_piece():
 
             switch_turn()  # Switch turn after successful move
 
-            if is_square_empty(7, 5) and is_square_empty(7,6):
+            if is_square_empty(7, 5) and is_square_empty(7, 6):
                 print("White King Side Castling")
                 wkc = True
             else:
                 wkc = False
-            if is_square_empty(0, 1) and is_square_empty(0,2) and is_square_empty(0,3):
+            if is_square_empty(0, 1) and is_square_empty(0, 2) and is_square_empty(0, 3):
                 print("Black Queen Side Castling")
                 bqc = True
             else:
                 bqc = False
-            if is_square_empty(7, 1) and is_square_empty(7,2) and is_square_empty(7,3):
+            if is_square_empty(7, 1) and is_square_empty(7, 2) and is_square_empty(7, 3):
                 print("White Queen Side Castling")
                 wqc = True
             else:
                 wqc = False
-            if is_square_empty(0, 5) and is_square_empty(0,6):
+            if is_square_empty(0, 5) and is_square_empty(0, 6):
                 print("Black King Side Castling")
                 bkc = True
             else:
@@ -281,8 +286,6 @@ def move_piece():
         else:
             return jsonify({'error': 'Invalid move'})
 
+
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
