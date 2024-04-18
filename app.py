@@ -21,6 +21,10 @@ pieces = [
 
 current_player = 'white'
 
+def is_square_empty(row, col):
+    return pieces[row][col] is None
+
+
 def is_king_in_check(color):
     # Find the position of the king of the given color
     king_row, king_col = None, None
@@ -248,6 +252,26 @@ def move_piece():
 
             switch_turn()  # Switch turn after successful move
 
+            if is_square_empty(7, 5) and is_square_empty(7,6):
+                print("White King Side Castling")
+                wkc = True
+            else:
+                wkc = False
+            if is_square_empty(0, 1) and is_square_empty(0,2) and is_square_empty(0,3):
+                print("Black Queen Side Castling")
+                bqc = True
+            else:
+                bqc = False
+            if is_square_empty(7, 1) and is_square_empty(7,2) and is_square_empty(7,3):
+                print("White Queen Side Castling")
+                wqc = True
+            else:
+                wqc = False
+            if is_square_empty(0, 5) and is_square_empty(0,6):
+                print("Black King Side Castling")
+                bkc = True
+            else:
+                wkc = False
             # Print the pieces array after the move in a readable format
             print("Pieces after move:")
             for row in pieces:
