@@ -23,9 +23,7 @@ pieces = [
 
 
 current_player = 'white'
-global wqc
-global bkc
-global bqc
+
 # Flags for kings' initial position
 
 # Global variable to store initial positions of each piece
