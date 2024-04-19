@@ -19,12 +19,8 @@ pieces = [
      'white_rook']
 ]
 
-
-
-
 current_player = 'white'
 
-# Flags for kings' initial position
 
 # Global variable to store initial positions of each piece
 initial_positions = [[None] * size for _ in range(size)]
@@ -37,9 +33,9 @@ for i in range(size):
 # Global variable to store movement history of each piece
 movement_history = [[False] * size for _ in range(size)]
 
+
 def is_square_empty(row, col):
     return pieces[row][col] is None
-
 
 def is_king_in_check(color):
     # Find the position of the king of the given color
@@ -185,12 +181,8 @@ def move_piece_king(from_row, from_col, to_row, to_col, color):
                         pieces[0][0] = None
                         return True
 
-        
-
     return (abs(from_row - to_row) <= 1 and abs(from_col - to_col) <= 1) and \
         is_valid_move(from_row, from_col, to_row, to_col, color)
-
-
 
 
 en_passant_target = None
@@ -287,38 +279,39 @@ def move_piece():
             # Handle other piece types
             valid_move = False
 
-
-
         if valid_move:
-            pieces[to_row][to_col] = piece
+            # Validate the move without making it
+            temp_piece_from = pieces[from_row][from_col]
+            temp_piece_to = pieces[to_row][to_col]
+
+            pieces[to_row][to_col] = temp_piece_from
             pieces[from_row][from_col] = None
 
+            own_king_in_check = is_king_in_check(color)
 
+            # Undo the temporary move
+            pieces[from_row][from_col] = temp_piece_from
+            pieces[to_row][to_col] = temp_piece_to
+
+            if own_king_in_check:
+                return jsonify({'error': 'Move leaves your king in check'})
+
+            # If the move doesn't put the king in check, apply it
+            pieces[to_row][to_col] = temp_piece_from
+            pieces[from_row][from_col] = None
+
+            # Update movement history
+            if (to_row, to_col) != initial_positions[from_row][from_col]:
+                movement_history[from_row][from_col] = True
+            if is_king_in_check("white"):
+                print("Player White in Check!")
+            if is_king_in_check("black"):
+                print("Player Black in Check!")
+            switch_turn()  # Switch turn after successful move
             # Check for pawn promotion
             promoted_piece = promote_pawn(to_row, to_col, color)
             if promoted_piece:
                 pieces[to_row][to_col] = promoted_piece
-
-            # Check if either king is in check after the move
-            white_in_check = is_king_in_check('white')
-            black_in_check = is_king_in_check('black')
-
-            if white_in_check:
-                print("White king is in check!")
-            if black_in_check:
-                print("Black king is in check!")
-            if (to_row, to_col) != initial_positions[from_row][from_col]:
-                movement_history[from_row][from_col] = True
-            '''print("Movement history after move:")
-            for row in movement_history:
-                print(row)'''
-            switch_turn()  # Switch turn after successful move
-
-            # Print the pieces array after the move in a readable format
-            '''print("Pieces after move:")
-            for row in pieces:
-                print(row)'''
-
             return jsonify({'pieces': pieces})
         else:
             return jsonify({'error': 'Invalid move'})
