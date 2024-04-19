@@ -23,11 +23,21 @@ pieces = [
 
 
 current_player = 'white'
-global wkc
 global wqc
 global bkc
 global bqc
 # Flags for kings' initial position
+
+# Global variable to store initial positions of each piece
+initial_positions = [[None] * size for _ in range(size)]
+
+# Initialize initial positions
+for i in range(size):
+    for j in range(size):
+        initial_positions[i][j] = (i, j)
+
+# Global variable to store movement history of each piece
+movement_history = [[False] * size for _ in range(size)]
 
 def is_square_empty(row, col):
     return pieces[row][col] is None
@@ -146,8 +156,43 @@ def move_piece_queen(from_row, from_col, to_row, to_col, color):
 
 
 def move_piece_king(from_row, from_col, to_row, to_col, color):
+    if color == 'white':
+        if from_row == 7 and from_col == 4:
+            if to_row == 7 and to_col == 6:
+                if is_square_empty(7, 5) and is_square_empty(7, 6):
+                    if (movement_history[7][4]) is False and (movement_history[7][7]) is False and True:
+                        pieces[7][5] = pieces[7][7]
+                        pieces[7][7] = None
+                        return True
+        if from_row == 7 and from_col == 4:
+            if to_row == 7 and to_col == 2:
+                if is_square_empty(7, 1) and is_square_empty(7, 2) and is_square_empty(7, 3):
+                    if (movement_history[7][4]) is False and (movement_history[7][0]) is False and True:
+                        pieces[7][3] = pieces[7][7]
+                        pieces[7][0] = None
+                        return True
+    else:
+        if from_row == 0 and from_col == 4:
+            if to_row == 0 and to_col == 6:
+                if is_square_empty(0, 5) and is_square_empty(0, 6):
+                    if (movement_history[0][4]) is False and (movement_history[0][7]) is False and True:
+                        pieces[0][5] = pieces[0][7]
+                        pieces[0][7] = None
+                        return True
+        if from_row == 0 and from_col == 4:
+            if to_row == 0 and to_col == 2:
+                if is_square_empty(0, 1) and is_square_empty(0, 2) and is_square_empty(0, 3):
+                    if (movement_history[0][4]) is False and (movement_history[0][0]) is False and True:
+                        pieces[0][3] = pieces[0][7]
+                        pieces[0][0] = None
+                        return True
+
+        
+
     return (abs(from_row - to_row) <= 1 and abs(from_col - to_col) <= 1) and \
         is_valid_move(from_row, from_col, to_row, to_col, color)
+
+
 
 
 en_passant_target = None
@@ -209,7 +254,7 @@ def chessboard():
 @app.route('/move_piece', methods=['POST'])
 def move_piece():
     global current_player
-
+    global movement_history
     if request.method == 'POST':
         data = request.get_json()
         from_row = data['from_row']
@@ -264,33 +309,17 @@ def move_piece():
                 print("White king is in check!")
             if black_in_check:
                 print("Black king is in check!")
-
+            if (to_row, to_col) != initial_positions[from_row][from_col]:
+                movement_history[from_row][from_col] = True
+            '''print("Movement history after move:")
+            for row in movement_history:
+                print(row)'''
             switch_turn()  # Switch turn after successful move
 
-            if is_square_empty(7, 5) and is_square_empty(7, 6):
-                wkc = True
-            else:
-                wkc = False
-            print("White King Side Castling: ", wkc)
-            if is_square_empty(0, 1) and is_square_empty(0, 2) and is_square_empty(0, 3):
-                bqc = True
-            else:
-                bqc = False
-            print("Black Queen Side Castling: ", bqc)
-            if is_square_empty(7, 1) and is_square_empty(7, 2) and is_square_empty(7, 3):
-                wqc = True
-            else:
-                wqc = False
-            print("White Queen Side Castling: ", wqc)
-            if is_square_empty(0, 5) and is_square_empty(0, 6):
-                bkc = True
-            else:
-                bkc = False
-            print("Black King Side Castling: ", bkc)
             # Print the pieces array after the move in a readable format
-            print("Pieces after move:")
+            '''print("Pieces after move:")
             for row in pieces:
-                print(row)
+                print(row)'''
 
             return jsonify({'pieces': pieces})
         else:
