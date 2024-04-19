@@ -10,7 +10,7 @@ White moves, then black. Turns cannot be taken out of sequence. Technically, sin
 Movements are handled over at chessboard.html and communicated to the backend.
 
 This version of the game features:
-  1. proper piece movements
+  1. Proper piece movements
   2. Proper "multiplayer" turns
   3. En passant captures
   4. Castling (move the king two squares right or left if no pieces between and the king or target rook has not moved)
