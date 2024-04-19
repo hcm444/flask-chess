@@ -162,7 +162,7 @@ def move_piece_king(from_row, from_col, to_row, to_col, color):
             if to_row == 7 and to_col == 2:
                 if is_square_empty(7, 1) and is_square_empty(7, 2) and is_square_empty(7, 3):
                     if (movement_history[7][4]) is False and (movement_history[7][0]) is False and True:
-                        pieces[7][3] = pieces[7][7]
+                        pieces[7][3] = pieces[7][0]
                         pieces[7][0] = None
                         return True
     else:
@@ -177,7 +177,7 @@ def move_piece_king(from_row, from_col, to_row, to_col, color):
             if to_row == 0 and to_col == 2:
                 if is_square_empty(0, 1) and is_square_empty(0, 2) and is_square_empty(0, 3):
                     if (movement_history[0][4]) is False and (movement_history[0][0]) is False and True:
-                        pieces[0][3] = pieces[0][7]
+                        pieces[0][3] = pieces[0][0]
                         pieces[0][0] = None
                         return True
 
