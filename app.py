@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
-
+en_passant_target = None
 # Global variables to store board and piece positions
 size = 8
 pieces = [
@@ -21,7 +21,6 @@ pieces = [
 
 current_player = 'white'
 
-
 # Global variable to store initial positions of each piece
 initial_positions = [[None] * size for _ in range(size)]
 
@@ -36,6 +35,7 @@ movement_history = [[False] * size for _ in range(size)]
 
 def is_square_empty(row, col):
     return pieces[row][col] is None
+
 
 def is_king_in_check(color):
     # Find the position of the king of the given color
@@ -183,9 +183,6 @@ def move_piece_king(from_row, from_col, to_row, to_col, color):
 
     return (abs(from_row - to_row) <= 1 and abs(from_col - to_col) <= 1) and \
         is_valid_move(from_row, from_col, to_row, to_col, color)
-
-
-en_passant_target = None
 
 
 def move_piece_pawn(from_row, from_col, to_row, to_col, color):
