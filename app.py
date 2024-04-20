@@ -306,9 +306,10 @@ def move_piece():
                 print("Player Black in Check!")
             switch_turn()  # Switch turn after successful move
             # Check for pawn promotion
-            promoted_piece = promote_pawn(to_row, to_col, color)
-            if promoted_piece:
-                pieces[to_row][to_col] = promoted_piece
+            if piece_type == 'pawn':
+                promoted_piece = promote_pawn(to_row, to_col, color)
+                if promoted_piece:
+                    pieces[to_row][to_col] = promoted_piece
             return jsonify({'pieces': pieces})
         else:
             return jsonify({'error': 'Invalid move'})
