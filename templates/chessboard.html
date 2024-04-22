@@ -51,6 +51,7 @@
         </tr>
         {% endfor %}
     </table>
+    <h3 id="current-turn">Turn: </h3>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -190,7 +191,19 @@
                         break;
                 }
             });
+              function getCurrentPlayer() {
+            fetch('/current_player')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('current-turn').textContent = 'Current Turn: ' + data.current_player;
+                });
+        }
 
+        // Call the function initially to set the current player
+        getCurrentPlayer();
+
+        // Set interval to update the current player every few seconds
+        setInterval(getCurrentPlayer, 500); // Update every 5 seconds (adjust as needed)
             function updateBoard(newPieces) {
                 pieces = newPieces;
                 for (let row = 0; row < pieces.length; row++) {

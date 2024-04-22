@@ -232,10 +232,13 @@ def move_piece_pawn(from_row, from_col, to_row, to_col, color):
 
     return False
 
+@app.route('/current_player')
+def get_current_player():
+    return jsonify({'current_player': current_player})
 
 @app.route('/')
 def chessboard():
-    return render_template('chessboard.html', size=size, pieces=pieces)
+    return render_template('chessboard.html', size=size, pieces=pieces, current_player=current_player)
 
 
 @app.route('/move_piece', methods=['POST'])
