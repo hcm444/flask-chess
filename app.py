@@ -314,6 +314,12 @@ def move_piece():
         else:
             return jsonify({'error': 'Invalid move'})
 
+@app.route('/keypress', methods=['POST'])
+def key_press():
+    key = request.form['key']
+    if key.lower() in ['q', 'k', 'r', 'b']:
+        print(f"Key '{key}' was pressed")
+    return jsonify({'message': 'Key press handled'})
 
 if __name__ == '__main__':
     app.run(debug=True)
