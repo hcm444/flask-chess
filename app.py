@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import chess
 from chess import *
+
 app = Flask(__name__)
 en_passant_target = None
 initial_positions = [[None] * size for _ in range(size)]
@@ -8,9 +9,11 @@ for i in range(size):
     for j in range(size):
         initial_positions[i][j] = (i, j)
 
+
 @app.route('/current_player')
 def get_current_player():
     return jsonify({'current_player': current_player})
+
 
 @app.route('/')
 def chessboard():
@@ -91,12 +94,14 @@ def move_piece():
         else:
             return jsonify({'error': 'Invalid move'})
 
+
 @app.route('/keypress', methods=['POST'])
 def key_press():
     key = request.form['key']
     if key.lower() in ['q', 'k', 'r', 'b']:
         print(f"Key '{key}' was pressed")
     return jsonify({'message': 'Key press handled'})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
