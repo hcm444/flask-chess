@@ -16,7 +16,6 @@ pieces = [
 movement_history = [[False] * size for _ in range(size)]
 current_player = 'white'
 
-
 def is_square_empty(row, col):
     return pieces[row][col] is None
 
