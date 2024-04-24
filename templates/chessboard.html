@@ -29,14 +29,14 @@
 
         /* Style for piece images */
         .piece {
-            width: 80%; /* Adjust the size of the piece as needed */
-            height: 80%; /* Adjust the size of the piece as needed */
-            display: block;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+    width: 80%; /* Adjust the size of the piece as needed */
+    height: 80%; /* Adjust the size of the piece as needed */
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
     </style>
 </head>
 <body>
@@ -51,7 +51,6 @@
         </tr>
         {% endfor %}
     </table>
-    <h3 id="current-turn">Turn: </h3>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -106,104 +105,43 @@
             });
 
             chessboard.addEventListener('drop', function(event) {
-                event.preventDefault();
-                const target = event.target.closest('td');
-                if (target && draggedPiece) {
-                    const fromRow = parseInt(draggedPiece.dataset.row);
-                    const fromCol = parseInt(draggedPiece.dataset.col);
-                    const toRow = parseInt(target.dataset.row);
-                    const toCol = parseInt(target.dataset.col);
-                    if (fromRow !== toRow || fromCol !== toCol) {
-                        const data = {
-                            from_row: fromRow,
-                            from_col: fromCol,
-                            to_row: toRow,
-                            to_col: toCol
-                        };
-                        fetch('/move_piece', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(data),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data && data.pieces) {
-                                // Update board with new piece positions
-                                updateBoard(data.pieces);
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
-                    }
-                    draggedPiece = null;
+    event.preventDefault();
+    const target = event.target.closest('td');
+    if (target && draggedPiece) {
+        const fromRow = parseInt(draggedPiece.dataset.row);
+        const fromCol = parseInt(draggedPiece.dataset.col);
+        const toRow = parseInt(target.dataset.row);
+        const toCol = parseInt(target.dataset.col);
+        if (fromRow !== toRow || fromCol !== toCol) {
+            const data = {
+                from_row: fromRow,
+                from_col: fromCol,
+                to_row: toRow,
+                to_col: toCol
+            };
+            fetch('/move_piece', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.pieces) {
+                    // Update board with new piece positions
+                    updateBoard(data.pieces);
                 }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
             });
-
-            // Add event listeners for specific keys
-            document.addEventListener('keydown', function(event) {
-                const key = event.key.toLowerCase();
-                switch (key) {
-                    case 'q':
-                        // Handle 'q' key press
-                        fetch('/keypress', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                            },
-                            body: 'key=q',
-                        });
-                        break;
-                    case 'k':
-                        // Handle 'k' key press
-                        fetch('/keypress', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                            },
-                            body: 'key=k',
-                        });
-                        break;
-                    case 'r':
-                        // Handle 'r' key press
-                        fetch('/keypress', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                            },
-                            body: 'key=r',
-                        });
-                        break;
-                    case 'b':
-                        // Handle 'b' key press
-                        fetch('/keypress', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                            },
-                            body: 'key=b',
-                        });
-                        break;
-                    default:
-                        // Ignore other keys
-                        break;
-                }
-            });
-              function getCurrentPlayer() {
-            fetch('/current_player')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('current-turn').textContent = 'Current Turn: ' + data.current_player;
-                });
         }
+        draggedPiece = null;
+    }
+});
 
-        // Call the function initially to set the current player
-        getCurrentPlayer();
 
-        // Set interval to update the current player every few seconds
-        setInterval(getCurrentPlayer, 500); // Update every 5 seconds (adjust as needed)
             function updateBoard(newPieces) {
                 pieces = newPieces;
                 for (let row = 0; row < pieces.length; row++) {
